@@ -2,7 +2,7 @@
 
 Detects and highlights word-level regions in a scanned or photographed handwritten notebook page using OpenCV.
 
-![Sample Output](output_sample.png)
+
 
 ---
 
@@ -95,7 +95,7 @@ for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
     print(f"w={w}, h={h}")
 ```
-
+![Sample Output](output_sample.png)
 ---
 
 ## Known Limitations
