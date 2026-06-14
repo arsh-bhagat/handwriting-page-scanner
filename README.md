@@ -1,40 +1,54 @@
 # Handwriting Page Scanner
 
-Detects and highlights word-level regions in a scanned or photographed handwritten notebook page using OpenCV.
-
-
+Detects and highlights word-level regions in a scanned or photographed handwritten notebook page using OpenCV. Also includes a Tesseract OCR pipeline to attempt text extraction.
 
 ---
 
-## What it does
+## Scripts
 
-Takes a photo of a handwritten page as input and draws green bounding boxes around every detected word region. Works well on messy, real-world handwriting — not just clean samples.
+| Script | What it does |
+|--------|-------------|
+| `contour_detection.py` | Detects word regions and draws green bounding boxes |
+| `ocr_pipeline.py` | Attempts to extract text from the page using Tesseract OCR |
 
 ---
 
 ## Setup
 
 ```bash
-pip install opencv-python numpy
+pip install opencv-python numpy pytesseract
 ```
+
+For `ocr_pipeline.py`, also install Tesseract:
+- Download from: https://github.com/UB-Mannheim/tesseract/wiki
+- Default install path: `C:\Program Files\Tesseract-OCR\`
 
 ---
 
 ## Usage
 
+**Contour Detection:**
 1. Clone the repo
 2. Change the image path in `contour_detection.py` to your own file
 3. Run:
-
 ```bash
 python contour_detection.py
 ```
-
 The script opens a resizable window showing the detected regions. Press any key to close.
+
+**OCR Pipeline:**
+1. Change the image path in `ocr_pipeline.py` to your own file
+2. Run:
+```bash
+python ocr_pipeline.py
+```
+Extracted text is printed to the terminal.
 
 ---
 
 ## Code Walkthrough
+
+### contour_detection.py
 
 ```python
 img = cv2.imread(r"path\to\image.jpg")
@@ -77,6 +91,27 @@ Draws a green rectangle on a copy of the original image. `(0, 255, 0)` is green 
 
 ---
 
+### ocr_pipeline.py
+
+```python
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+```
+Points Python to the Tesseract installation. Required on Windows.
+
+```python
+cropped = gray[100:1500, 50:850]
+```
+Crops out the noisy edges of the page — spiral binding, dark borders — before passing to Tesseract. Format is `[y_start:y_end, x_start:x_end]`.
+
+```python
+text = pytesseract.image_to_string(thresh, config="--psm 11")
+```
+Runs OCR on the thresholded image. `--psm 11` tells Tesseract to treat the input as sparse text and find as much as possible, rather than assuming a clean document layout.
+
+**Note on accuracy:** Tesseract was trained on printed fonts, not handwriting. Accuracy on cursive handwriting is very low (~1%) regardless of preprocessing. This is a fundamental limitation of the tool, not a code issue — it's why neural approaches to handwriting recognition exist.
+
+---
+
 ## Tuning Parameters
 
 If detection is off on your image, these are the values to adjust:
@@ -95,7 +130,9 @@ for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
     print(f"w={w}, h={h}")
 ```
+
 ![Sample Output](output_sample.png)
+
 ---
 
 ## Known Limitations
@@ -103,6 +140,7 @@ for cnt in contours:
 - Ruled lines on notebook paper sometimes get detected — can be filtered with `w < 3 * h`
 - Letters that touch each other may get grouped into one box
 - Very light ink or heavy bleed-through may need threshold tuning
+- Tesseract OCR has very low accuracy on cursive handwriting — neural approaches are needed for reliable handwriting recognition
 
 ---
 
@@ -111,3 +149,5 @@ for cnt in contours:
 - Python 3.x
 - OpenCV (`cv2`)
 - NumPy
+- Tesseract OCR
+- pytesseract
