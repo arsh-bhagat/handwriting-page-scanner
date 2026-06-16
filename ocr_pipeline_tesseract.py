@@ -14,6 +14,8 @@ thresh = cv2.adaptiveThreshold(
     cv2.THRESH_BINARY,
     11, 4
 )
+# the values 11, 4 give the most amount of lettter detection for the given sample
+# can be changed depending on the image 
 text = pytesseract.image_to_string(thresh, config="--psm 11")
 print(text)
 
