@@ -9,7 +9,7 @@ Detects and highlights word-level regions in a scanned or photographed handwritt
 | Script | What it does |
 |--------|-------------|
 | `contour_detection.py` | Detects word regions and draws green bounding boxes |
-| `ocr_pipeline.py` | Attempts to extract text from the page using Tesseract OCR |
+| `ocr_pipeline_tesseract.py` | Attempts to extract text from the page using Tesseract OCR |
 
 ---
 
@@ -19,7 +19,7 @@ Detects and highlights word-level regions in a scanned or photographed handwritt
 pip install opencv-python numpy pytesseract
 ```
 
-For `ocr_pipeline.py`, also install Tesseract:
+For `ocr_pipeline_tesseract.py`, also install Tesseract:
 - Download from: https://github.com/UB-Mannheim/tesseract/wiki
 - Default install path: `C:\Program Files\Tesseract-OCR\`
 
@@ -37,10 +37,10 @@ python contour_detection.py
 The script opens a resizable window showing the detected regions. Press any key to close.
 
 **OCR Pipeline:**
-1. Change the image path in `ocr_pipeline.py` to your own file
+1. Change the image path in `ocr_pipeline_tesseract.py` to your own file
 2. Run:
 ```bash
-python ocr_pipeline.py
+python ocr_pipeline_tesseract.py
 ```
 Extracted text is printed to the terminal.
 
@@ -131,7 +131,7 @@ for cnt in contours:
     print(f"w={w}, h={h}")
 ```
 
-![Sample Output](output_sample.png)
+![Sample Output](assets/output_sample.png)
 
 ---
 
